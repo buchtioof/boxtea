@@ -32,7 +32,7 @@ class SharedSamba(models.Model):
     is_read_only = models.BooleanField(default=False)
     
     # Many-to-Many: Permit multiple users to access multiple folders
-    allowed_employees = models.ManyToManyField(Employee, blank=True, related_name='accessible_folders')
+    allowed_employees = models.ManyToManyField(Employees, blank=True, related_name='accessible_folders')
 
     def __str__(self):
         return self.name
