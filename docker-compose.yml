@@ -1,0 +1,11 @@
+services:
+  grabberweb:
+    build: .
+    container_name: grabberweb
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

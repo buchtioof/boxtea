@@ -1,0 +1,9 @@
+.DS_Store
+gbvenv
+__pycache__
+*.sqlite3
+tailwindcss
+data/
+web/migrations/000*
+staticfiles/
+.env
