@@ -8,7 +8,7 @@ def dashboard_view(request):
 
     computer_info = SystemInfo.objects.first()
     
-    employees = Employee.objects.all()
+    employees = Employees.objects.all()
     
     metrics = SystemMetrics.objects.all()[:10]
     
