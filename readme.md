@@ -1,17 +1,17 @@
 ![grabber logo](./static/billboard.png)
 
-# Grabber - Fetch all your PC
+# Boxtea - Simple Debian file administration
 
 ## About
-Grabber is an administration interface that allows you to manage a group of computers at a glance.\
-*it's a school project, learn more about the project [in the docs notes (in french)](https://buchtioof.github.io/notes/projects/2025-12-05/)*
+Boxtea is a simple interface for file administration in a Debian server. Change Samba file configuration easily, give external users access to your Samba FS and check system status at a glance.\
+*part of our internship period as SysAdmin, learn more about the project [in the docs notes (in french)](https://buchtioof.github.io/notes/projects/stage/main/)*
 
 ## Usage
 
 ### Docker deployment
 
 Firstly, git clone this repo:\
-`git clone https://github.com/buchtioof/grabber.git`
+`git clone https://github.com/buchtioof/boxtea.git`
 
 In order to use properly your admin panel, create an .env file with these variables:\
 ```text
@@ -33,40 +33,11 @@ Then, build the container with docker-compose:\
 
 Finally, access to your Grabber panel via the IP you've given in your .env file!
 
-### For pre-release versions
-
-Firstly, git clone this repo:\
-`git clone https://github.com/buchtioof/grabber.git`
-
-Then, inside your cloned directory, run the bash script:\
-`./grabber.sh`
-
-In order to use [Alfred](https://github.com/buchtioof/alfred) and fetch other computers data, you will need to add the host ip address in settings.json
-```json
-{
-  "ip_address": "", # if no address detected, grabber use localhost, important to change for Alfred
-  "port": "8000", # change if you need a custom port
-  "session_token": "" # no need to touch it as it update each times you'll launch grabber
-}
-```
-
 ## Changelogs
 
-### Pre-release phase
+### releases
 
-- v0.1 : Grabber base, write fetch data in summary.txt needs upgrades
-- v0.2 : Use admin to fetch more data like cpu info
-- v0.3 : Minimal uvicorn usage, shows data fetch for one pc saved in json data locally
-- v0.4 : Save fetch data in a sql database and can save multiple pc in a pretty interface
-- v0.5 : Switch to Django, use API model, security update by using session tokens to verify communications, use [Alfred](https://github.com/buchtioof/alfred) to fetch data via SSH
-- v0.6 : Admin panel refine, login page rework, local session verification that locks Alfred (SSH injection), switch CSS to Tailwind local, employees management and links between them and PCs
-- v0.7 : QOL update, settings added, employees modal reworked, added middleware (manage timezone in Django)
-- v0.8 : Use SSH keys to reconnect safely, Languages update in beta (English and French available)
-- v0.9 : Use Gunicorn+Whitenoise for production, bug fixes, clean and verified code
-
-### Production releases
-
-- v1 (actual) : Deployment with Docker, all working fine
+- v0.1 (actual) : Non functional state, modification from Grabber to this project
 
 ## Contributing
 
@@ -76,7 +47,7 @@ In order to develop new features or work on the design, launch Grabber by using 
 docker-compose -f docker-compose.dev.yml up
 ```
 
-## Dependencies
+## Dependencies (NEED TO BE UPDATED)
 
 To run Grabber properly on your device, you will need these 3 dependencies available:
 - [jq](https://github.com/jqlang/jq)
@@ -96,4 +67,4 @@ These 3 are already available in Grabber:
 
 # Credits
 To the big work of all the dependencies used\
-To [kawaiiLogos](https://github.com/SAWARATSUKI/KawaiiLogos) for the logo inspiration
+Image not mine
