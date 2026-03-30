@@ -13,19 +13,19 @@
     <header class="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-slate-700 bg-slate-800 px-6 shadow-sm">
         <div class="flex items-center gap-3">
             {% csrf_token %}
-            <h1 class="text-lg font-bold text-slate-100">{% trans "Welcome to Grabber," %} {{ request.user.username }}</h1>
+            <h1 class="text-lg font-bold text-slate-100">{% trans "Welcome to BoxTea," %} {{ request.user.username }}</h1>
             
             <a href="https://github.com/buchtioof/grabber#changelogs" 
                 class="rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide transition-colors duration-200 
-                {% if grabber_version != 'Unknown Grabber version' %}
+                {% if boxtea_version != 'Unknown BoxTea version' %}
                         border-green-500/30 bg-green-500/10 text-green-400 hover:border-green-500/50 hover:bg-green-500/20
                 {% else %}
                         border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/20
                 {% endif %}" 
                 title="{% trans 'See the upgrades in the changelogs' %}">
                     
-                    {% if grabber_version != 'Unknown Grabber version' %}
-                        v{{ grabber_version }}
+                    {% if boxtea_version != 'Unknown BoxTea version' %}
+                        v{{ boxtea_version }}
                     {% else %}
                         {% trans "Unknown grabber version / Dev Mode" %}
                     {% endif %}
@@ -42,13 +42,6 @@
                     <path d="M226.76,69a8,8,0,0,0-12.84-2.88l-40.3,37.19-17.23-3.7-3.7-17.23,37.19-40.3A8,8,0,0,0,187,29.24,72,72,0,0,0,88,96,72.34,72.34,0,0,0,94,124.94L33.79,177c-.15.12-.29.26-.43.39a32,32,0,0,0,45.26,45.26c.13-.13.27-.28.39-.42L131.06,162A72,72,0,0,0,232,96,71.56,71.56,0,0,0,226.76,69ZM160,152a56.14,56.14,0,0,1-27.07-7,8,8,0,0,0-9.92,1.77L67.11,211.51a16,16,0,0,1-22.62-22.62L109.18,133a8,8,0,0,0,1.77-9.93,56,56,0,0,1,58.36-82.31l-31.2,33.81a8,8,0,0,0-1.94,7.1L141.83,108a8,8,0,0,0,6.14,6.14l26.35,5.66a8,8,0,0,0,7.1-1.94l33.81-31.2A56.06,56.06,0,0,1,160,152Z"></path>
                 </svg>
                 {% trans "Settings" %}
-            </button>
-
-            <button id="open-employee-modal" class="flex items-center gap-1.5 text-sm font-semibold text-white transition-colors duration-200 hover:text-blue-300 hover:underline">
-                <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-                    <path d="M75.19,198.4a8,8,0,0,0,11.21-1.6,52,52,0,0,1,83.2,0,8,8,0,1,0,12.8-9.6A67.88,67.88,0,0,0,155,165.51a40,40,0,1,0-53.94,0A67.88,67.88,0,0,0,73.6,187.2,8,8,0,0,0,75.19,198.4ZM128,112a24,24,0,1,1-24,24A24,24,0,0,1,128,112Zm72-88H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V40A16,16,0,0,0,200,24Zm0,192H56V40H200ZM88,64a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H96A8,8,0,0,1,88,64Z"></path>
-                </svg>
-                {% trans "Employees" %}
             </button>
             
             <a href="/logout" class="flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-400 transition-all duration-200 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/20" title="{% trans 'Logout' %}">
@@ -83,110 +76,6 @@
     
     {% block content %}
     {% endblock %}
-
-    <div id="employee-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm transition-opacity">
-        <div class="relative w-full max-w-2xl rounded-xl border border-slate-700 bg-slate-800 p-6 shadow-2xl">
-            
-            <button type="button" id="close-employee-modal" class="absolute right-4 top-4 text-slate-400 transition-colors hover:text-red-500">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-
-            <div class="mb-5 border-b border-slate-700 pb-4 pr-6">
-                <h2 class="text-lg font-bold uppercase tracking-wide text-slate-100">{% trans "Manage employees" %}</h2>
-                <p class="mt-1 text-sm text-slate-400">{% trans "Edit the list of users to assign to computers." %}</p>
-            </div>
-
-            <div class="mb-6 overflow-hidden rounded-lg border border-slate-700 bg-slate-900/50">
-                <button type="button" id="toggle-add-employee-btn" class="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-slate-800/50">
-                    <h3 class="text-sm font-bold text-slate-300">{% trans "Add an new employee" %}</h3>
-                    <svg id="toggle-add-employee-icon" class="h-5 w-5 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-
-                <div id="add-employee-form-container" class="hidden border-t border-slate-700 p-4 pt-3">
-                    <form method="post" action="{% url 'editemployee' %}" class="flex flex-col gap-4">
-                        {% csrf_token %}
-                        <input type="hidden" name="add_employee" value="1">
-                        <div class="flex gap-3">
-                            <div class="flex-1">
-                                <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "First name" %}</label>
-                                <input type="text" name="first_name" required class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            </div>
-                            <div class="flex-1">
-                                <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "Name" %}</label>
-                                <input type="text" name="last_name" required class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "E-mail address" %}</label>
-                            <input type="email" name="email" placeholder="{% trans 'jean.dupont@entreprise.com' %}" class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        </div>
-                        <div class="mt-2 flex justify-end">
-                            <button type="submit" class="rounded-md bg-blue-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:shadow-lg">
-                                {% trans "Save" %}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <h3 class="mb-3 text-sm font-bold text-slate-300">{% trans "Existing employees" %}</h3>
-            <div class="w-full">
-                <ul class="flex flex-col gap-2">
-                    {% for emp in employees %}
-                        <li class="overflow-hidden rounded-lg border border-slate-700 bg-slate-800 transition-colors hover:border-slate-500">
-                            <button type="button" class="emp-toggle-btn flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-slate-700/50" data-target="emp-form-{{ emp.id }}">
-                                <span class="text-sm font-semibold text-slate-200">{{ emp.first_name }} {{ emp.last_name }}</span>
-                                <svg class="emp-toggle-icon h-5 w-5 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-
-                            <div id="emp-form-{{ emp.id }}" class="hidden border-t border-slate-700 bg-slate-900/30 p-4">
-                                <form method="post" action="{% url 'editemployee' %}" class="flex flex-col gap-4">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="employee_id" value="{{ emp.id }}">
-                                    
-                                    <div class="flex gap-3">
-                                        <div class="flex-1">
-                                            <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "First name" %}</label>
-                                            <input type="text" name="first_name" value="{{ emp.first_name }}" required class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                                        </div>
-                                        <div class="flex-1">
-                                            <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "Name" %}</label>
-                                            <input type="text" name="last_name" value="{{ emp.last_name }}" required class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="mb-1 block text-sm font-semibold text-slate-400">{% trans "E-mail address" %}</label>
-                                        <input type="email" name="email" value="{{ emp.email }}" class="w-full rounded-md border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                                    </div>
-                                    <div class="mt-2 flex justify-end gap-3">
-                                        <button type="submit" name="delete_employee" value="1" class="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-500 transition-colors hover:bg-red-500/20" onclick="return confirm('{% trans "Are you sure you want to delete this employee?" %}');">
-                                            {% trans "Delete" %}
-                                        </button>
-                                        <button type="submit" name="edit_employee" value="1" class="rounded-md bg-blue-500 px-6 py-2 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 hover:shadow-lg">
-                                            {% trans "Save" %}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-                    {% empty %}
-                        <li class="text-center text-sm text-slate-500 py-4">{% trans "No employees created for now." %}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="mt-6 flex justify-end">
-                <button type="button" id="cancel-employee-modal" class="rounded-md bg-slate-700 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-slate-600">
-                    {% trans "Cancel" %}
-                </button>
-            </div>
-        </div>
-    </div>
 
     <div id="settings-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm transition-opacity">
         <div class="relative w-full max-w-lg rounded-xl border border-slate-700 bg-slate-800 p-6 shadow-2xl">
@@ -299,7 +188,6 @@
             modal.addEventListener('click', (e) => { if (e.target === modal) toggleModal(false); });
         };
 
-        setupModal('employee-modal', 'open-employee-modal', ['close-employee-modal', 'cancel-employee-modal']);
         setupModal('settings-modal', 'open-settings-modal', ['close-settings-modal', 'cancel-settings-modal']);
 
         // Accordion management
@@ -309,15 +197,6 @@
                 document.getElementById(iconId)?.classList.toggle('rotate-180');
             });
         };
-
-        setupAccordion('toggle-add-employee-btn', 'add-employee-form-container', 'toggle-add-employee-icon');
-
-        document.querySelectorAll('.emp-toggle-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById(this.dataset.target)?.classList.toggle('hidden');
-                this.querySelector('.emp-toggle-icon')?.classList.toggle('rotate-180');
-            });
-        });
     });
 </script>
 </body>

@@ -3,19 +3,14 @@ export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
 export LC_ALL=C
 export LANG=C
 
-# ==============================================================================
-#   Script : grabber.sh
-#   Version: 0.9
-# ==============================================================================
-
 ##### MAIN VARIABLES #####
 ALERT='\033[0;31m'      # RED
 SUCCESS='\033[0;32m'    # GREEN
 WARNING='\033[0;33m'    # YELLOW
 ECM='\033[0m'           # END COLOR MESSAGE
 
-GB_VERSION='1.2'
-MOTOR_VERSION='Alfred v0.2'
+BT_VERSION='0.0.5-alpha'
+MOTOR_VERSION='NONE'
 
 ADMIN_ADDRESS=${HOST:-0.0.0.0}
 PORT=${PORT:-8000}
@@ -88,7 +83,7 @@ server() {
     export DJANGO_ALLOWED_HOST=$ADMIN_ADDRESS
 
     # Change by the version 
-    export GRABBER_VERSION=$GB_VERSION
+    export BOXTEA_VERSION=$BT_VERSION
     export MOTOR_USED=$MOTOR_VERSION
 
     # Check if user added settings
@@ -119,13 +114,19 @@ server() {
 ##############################
 
 ########## USER INTERACTION ##########
-echo "   ____     ____                 ____     ____  U _____  u   ____     "                                  
-echo 'U /\/__|uU |  _"\ u     _     U | o°°)uU | _U")u\| ___"|/ U |  _"\ u  '
-echo '\| |  _ / \| |_) |/ U  /0\  u  \|  _ \/ \|  _ \/ |  _|     \| |_) |/  '
-echo " | |_| |   |  _ <    \/ 3 \/    | |_) |  | |_) | | |___     |  _ <    "
-echo "  \____|   |_| \_\   / ___ \    |____/   |____/  |_____|    |_| \_\   "
-echo "  _)(|_    //   \ \_ \ \  \ \  _|| \ \_  _|| \ \_ <<   >>   / /  \ \  "
-echo " (__)__)  (__)  (__)(__)  (__)(__) (__)(__) (__)(__) (__)  (__)  (__) "      
+echo "               .-'''-.                                                        "
+echo "             '   _    \                                                       "
+echo "  /|       /   /   .   \                             __.....__                "
+echo "  ||      .   |     \  '                         .-''         '.              "
+echo "  ||      |   '      |  '                  .|   /     .-''¨'-.  .             "
+echo "  ||  __  \    \     / /____     _____   .' |_ /     /________\   \    __     "
+echo "  ||/'__ '. .   \ ..' / .   \  .'    / .'     ||                  | .:--.'.   "
+echo "  |:/   '. '  '-...-'    \   \'    .' '--.  .-'\    .-------------'/ |   \ |  "
+echo "  ||     | |               '.    .'      |  |   \    '-.____...---. ¨ __ | |  "
+echo "  ||\    / '               .'     \.     |  |    \.             .'  .'.''| |  "
+echo "  |/\'..' /              .'  .' .   \.   |  '.'    ¨''-...... -'   / /   | |_ "
+echo "  '   --               .'   /    \.   \. |   /                     \ \._,\ '/ "
+echo "                     '----'       '----' '-'                        --'       "      
 echo ""
 echo "Hello World!"
 echo ""

@@ -1,7 +1,7 @@
 services:
-  grabberweb:
+  boxteaweb:
     build: .
-    container_name: grabberweb
+    container_name: boxteaweb
     env_file:
       - .env
     ports:

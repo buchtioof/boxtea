@@ -1,7 +1,7 @@
 services:
-  grabberdev:
+  boxteadev:
     build: .
-    container_name: grabberdev
+    container_name: boxteadev
     env_file:
       - .env
     environment:
@@ -12,4 +12,4 @@ services:
     volumes:
       - .:/app
       - ./data:/app/data
-    command: python manage.py runserver 0.0.0.0:${PORT:-8000}
+    command: python manage.py runserver ${IP:-0.0.0.0}:${PORT:-8000}

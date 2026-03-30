@@ -17,9 +17,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . .
 
-RUN chmod +x grabber.sh
+RUN chmod +x starter.sh
 RUN mkdir -p data
 
 EXPOSE 8000
 
-CMD ["./grabber.sh"]
+CMD ["./starter.sh"]
