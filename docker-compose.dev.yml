@@ -8,8 +8,8 @@ services:
       - DEBUG=True
       - SESSION_TOKEN=temporarydevkey_dontuseinprod
     ports:
-      - "${PORT:-8000}:${PORT:-8000}"
+      - "8000:8000"
     volumes:
       - .:/app
       - ./data:/app/data
-    command: python manage.py runserver ${IP:-0.0.0.0}:${PORT:-8000}
+    command: /app/starter.sh

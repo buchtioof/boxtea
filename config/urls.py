@@ -13,13 +13,13 @@ urlpatterns = [
     path('admin/', include(admin_patterns)),                                # Permit admin requests
     path('i18n/', include('django.conf.urls.i18n')),                        # Request translations
     
-    path('endpoint', api.receive_system_info, name='receive_system_info'),  # Endpoint to receive Alfred data
+    path('endpoint', api.receive_system_info, name='receive_system_info'),  # Endpoint to receive Alfred data          
 
     # Dashboard redirection
     path('', views.dashboard_view, name='dashboard'),
 
     # Actions
     path('logout', actions.disconnect, name='logout'),
-    path('settings/', actions.user_settings, name='editsetting'),
-    path('employees/manage/', actions.emp_settings, name='editemployee'),
+    path('settings/', actions.admin_settings, name='editsetting'),
+    path('user/create/', actions.add_user, name='adduser'), 
 ]

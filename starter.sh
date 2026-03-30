@@ -95,10 +95,17 @@ server() {
         echo -e "${WARNING}> No Address set in settings.json, port "8000" is chosen${ECM}";
     fi
 
-    # Run server in background
     sleep 2
-    export DJANGO_ALLOWED_HOST=$ADMIN_ADDRESS
-    gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --access-logfile - &
+
+    # Run server for each purpose
+    if [ "$DEBUG" = "True" ]; then
+        echo "Start the dev server"
+        exec python manage.py runserver 0.0.0.0:$PORT
+    else
+        echo "Start the production server"
+        gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --access-logfile - &
+    fi
+    
     SERVER_PID=$!
 
     trap cleanup INT

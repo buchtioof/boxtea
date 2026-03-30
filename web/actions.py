@@ -9,53 +9,14 @@ from django.utils.translation import gettext as _
 from django.utils import translation
 from .models import SystemInfo, Employees
 
-##### LOGOUT #####
+# Logout action
 def disconnect(request):
     logout(request)
     return redirect('admin:login')
 
-##### SETTINGS ACTIONS #####
-# Employees management
+# Settings set of actions
 @staff_member_required(login_url='admin:login')
-def emp_settings(request):
-
-    if request.method == 'POST':
-        
-        if 'add_employee' in request.POST:
-            username = request.POST.get('username') 
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email') 
-            
-            if username and first_name and last_name:
-                Employees.objects.create(username=username, first_name=first_name, last_name=last_name, email=email)
-                messages.success(request, _("[OK] Employee {first_name} {last_name} has been added.").format(first_name=first_name, last_name=last_name))
-
-        elif 'edit_employee' in request.POST:
-            emp_id = request.POST.get('employee_id')
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            emp = get_object_or_404(Employees, id=emp_id)
-            
-            if first_name and last_name:
-                emp.first_name = first_name
-                emp.last_name = last_name
-                emp_name = f"{emp.first_name} {emp.last_name}"
-                emp.save()
-                messages.success(request, _("[OK] Employee {emp_name} has been updated.").format(emp_name=emp_name))
-
-        elif 'delete_employee' in request.POST:
-            emp_id = request.POST.get('employee_id')
-            emp = get_object_or_404(Employees, id=emp_id)
-            emp_name = f"{emp.first_name} {emp.last_name}"
-            emp.delete()
-            messages.success(request, _("[OK] Employee {emp_name} has been deleted.").format(emp_name=emp_name))
-
-    return redirect(request.META.get('HTTP_REFERER', '/'))
-
-# Settings management
-@staff_member_required(login_url='admin:login')
-def user_settings(request):
+def admin_settings(request):
     if request.method == 'POST':
         user = request.user
         new_username = request.POST.get('new_username')
@@ -103,4 +64,55 @@ def user_settings(request):
             
         return response
             
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@staff_member_required(login_url='admin:login')
+def add_user(request):
+
+    if request.method == 'POST':
+        
+        if 'add_user' in request.POST:
+            username = request.POST.get('username')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            password = request.POST.get('password')
+            quota = int(request.POST.get('quota', 5000))
+            samba_access = request.POST.get('samba_access') == 'on'
+            
+            if username and first_name and last_name and password:
+                try:
+                    # Create user in DB
+                    Employee.objects.create(
+                        username=username, 
+                        first_name=first_name, 
+                        last_name=last_name, 
+                        storage_quota=quota,
+                        has_samba_access=samba_access
+                    )
+                    
+                    # Create user in Linux
+                    subprocess.run(['sudo', 'useradd', '-m', '-s', '/bin/bash', username], check=True)
+                    
+                    # Add password to user
+                    subprocess.run(['sudo', 'chpasswd'], input=f"{username}:{password}\n", text=True, check=True)
+
+                    # Give samba privileges
+                    if samba_access:
+                        subprocess.run(['sudo', 'smbpasswd', '-s', '-a', username], input=f"{password}\n{password}\n", text=True, check=True)
+
+                    # Manage storage quota
+                    if quota > 0:
+                        soft_limit = str(quota * 1024)
+                        hard_limit = str(int(quota * 1024 * 1.1)) # Let +10% space for hard limit
+                        subprocess.run(['sudo', 'setquota', '-u', username, soft_limit, hard_limit, '0', '0', '/'], check=True)
+
+                    messages.success(request, _("[OK] The user {user} has been successfully created!").format(user=username))
+                
+                except IntegrityError:
+                    messages.error(request, _("[ERROR] This username is already used. Please choose another one."))
+                except subprocess.CalledProcessError as e:
+                    messages.error(request, _("[INTERNAL ERROR] An error occured from your Linux system: {e}").format(e=str(e)))
+                except Exception as e:
+                    messages.error(request, _("[ERROR] {e}").format(e=str(e)))
+    
     return redirect(request.META.get('HTTP_REFERER', '/'))
