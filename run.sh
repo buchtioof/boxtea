@@ -12,44 +12,98 @@ ECM='\033[0m'           # END COLOR MESSAGE
 BT_VERSION='0.0.5-alpha'
 MOTOR_VERSION='NONE'
 
-ADMIN_ADDRESS=${HOST:-0.0.0.0}
-PORT=${PORT:-8000}
+PROJECT_DIR=$(pwd)
+CURRENT_USER=$USER
+INSTALL_DIR="/opt/boxtea"
+REPO_URL="https://github.com/buchtioof/boxtea.git"
 
 ##############################
 
-######### CLEANUP END ##########
+######### ELEMENTS ##########
 
-cleanup() {
-    echo -e "\n${WARNING}> Closing the Server...${ECM}"
-    kill $SERVER_PID
+setup_env() {
+    echo -e "${WARNING}> No .env file found, let's configure your environment now.${ECM}"
+    echo "---------- INTERNET CONFIGURATION ----------"
+    echo "On which IP address you want to route BoxTea? (Leave blank to use the host IP)"
+    read HOST
+    HOST=${HOST:-0.0.0.0}
+
+    echo "Which port you want to use for BoxTea? (Leave blank to use 8000)"
+    read PORT
+    PORT=${PORT:-8000}
+
+    echo "---------- ADMIN CONFIGURATION ----------"
+    echo "Now, create your superuser for the admin panel."
+    echo "What username do you want to use? (Leave blank to use admin)"
+    read SUNAME
+    SUNAME=${SUNAME:-admin}
+
+    echo "Type the email address linked to this user."
+    read MAIL
+    MAIL=${MAIL:-admin@boxtea.local}
+
+    echo "Type the superuser password"
+    while true; do
+        read -s PASS
+        echo ""
+            
+        if [ -z "$PASS" ]; then
+            # If password blank
+            echo -e "${ALERT}> Password cannot be blank. Please type a valid password:${ECM}"
+        elif [ ${#PASS} -lt 8 ]; then
+            # If the password is less than 8 char
+            echo -e "${ALERT}> Password must be at least 8 characters long. Please type again:${ECM}"
+        else
+            break
+        fi
+    done
+
     echo ""
-    echo "See you space cowboy..."
-    exit 0
+    echo "Creating your environment file for BoxTea..."
+
+    cat <<EOF > "$PROJECT_DIR/.env"
+# SERVER SETTINGS
+HOST=$HOST
+PORT=$PORT
+
+# ADMIN SETTINGS
+DJANGO_SUPERUSER_USERNAME=$SUNAME
+DJANGO_SUPERUSER_EMAIL=$MAIL
+DJANGO_SUPERUSER_PASSWORD=$PASS
+EOF
+
+    echo -e "${SUCCESS}Configuration successful, BoxTea runner will continue the installation then."
 }
 
 ##############################
 
-########## ADMIN PANEL ##########
+########## MAIN ##########
 
-server() {
+main() {
+    echo "1/8 Installation of the requirements..."
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq git python3 python3-venv python3-pip quota samba
+
+    echo "2/8 Fetch the source code of BoxTea...${ECM}"
+    if [ ! -d "$INSTALL_DIR/.git" ]; then
+        sudo git clone -q $GIT_REPO_URL $INSTALL_DIR
+    else
+        echo "> BoxTea alredy exists in installation folder, updating your current installation..."
+        cd $INSTALL_DIR
+        sudo git pull -q
+    fi
+
+    sudo chown -R $CURRENT_USER:www-data $INSTALL_DIR
+    cd $INSTALL_DIR || exit
+
+    echo "3/8 Configuration of the environment..."
+    if [ ! -f "$PROJECT_DIR/.env" ]; then
+        setup_env
+    fi
 
     # Create if needed the data folder
     if [ ! -d "./data" ]; then
         mkdir -p data
-    fi
-
-    # Generate an SSH key for Paramiko
-    mkdir -p ./data/keys
-    if [ ! -f "data/keys/id_ed25519" ]; then
-        echo ""
-        echo -e "${YELLOW}No SSH key detected, generating one...${ECM}"
-        ssh-keygen -t ed25519 -f ./data/keys/id_ed25519 -N "" -q
-        echo "${GREEN}> Done!${ECM}"
-    fi
-
-    if [ ! -f "./data/keys/secret.key" ]; then
-        echo -e "${YELLOW}No Django Secret Key detected, generating one...${ECM}"
-        openssl rand -base64 48 > ./data/keys/secret.key
     fi
 
     # Generate session token and save in a variable
@@ -135,9 +189,8 @@ echo "  |/\'..' /              .'  .' .   \.   |  '.'    ¨''-...... -'   / /   
 echo "  '   --               .'   /    \.   \. |   /                     \ \._,\ '/ "
 echo "                     '----'       '----' '-'                        --'       "      
 echo ""
-echo "Hello World!"
+echo "Hello World! - Running BoxTea v$BT_VERSION"
 echo ""
-echo "Starting Admin Panel..."
-server
+main
 
 ##############################
