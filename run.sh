@@ -60,16 +60,26 @@ setup_env() {
 
     echo ""
     echo "Creating your environment file for BoxTea..."
+    SEC_KEY=$(openssl rand -base64 48)
+    SESS_TOK=$(openssl rand -hex 32)
     
     cat <<EOF > "$INSTALL_DIR/.env"
 # SERVER SETTINGS
 HOST=$HOST
 PORT=$PORT
 
+# SECURITY
+DJANGO_SECRET_KEY=$SEC_KEY
+SESSION_TOKEN=$SESS_TOK
+
 # ADMIN SETTINGS
 DJANGO_SUPERUSER_USERNAME=$SUNAME
 DJANGO_SUPERUSER_EMAIL=$MAIL
 DJANGO_SUPERUSER_PASSWORD=$PASS
+
+# VERSIONS
+BOXTEA_VERSION=$BT_VERSION
+MOTOR_USED=$MOTOR_VERSION
 EOF
 
     echo -e "${SUCCESS}Configuration successful, BoxTea runner will continue the installation then.${ECM}"
@@ -155,17 +165,13 @@ main() {
 
     # Place static files inside "staticfiles" Django folder
     echo "7/8 Prepare the static files for Django..."
-    python manage.py collectstatic --noinput "input.css" > /dev/null 2>&1
+    python manage.py collectstatic --noinput > /dev/null 2>&1
+    
     echo "$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/sbin/useradd, /usr/sbin/chpasswd, /usr/bin/smbpasswd, /usr/sbin/setquota" | sudo tee /etc/sudoers.d/boxtea > /dev/null
     
     echo "Starting the server..."
 
-    sed -i '/BOXTEA_VERSION/d' "$INSTALL_DIR/.env"
-    sed -i '/MOTOR_USED/d' "$INSTALL_DIR/.env"
-    echo "BOXTEA_VERSION=$BT_VERSION" >> "$INSTALL_DIR/.env"
-    echo "MOTOR_USED=$MOTOR_VERSION" >> "$INSTALL_DIR/.env"
-
-   echo "8/8 Creating the service BoxTea..."
+    echo "8/8 Creating the service BoxTea..."
     cat <<EOF | sudo tee /etc/systemd/system/boxtea.service > /dev/null
 [Unit]
 Description=Boxtea server daemon for the admin panel
