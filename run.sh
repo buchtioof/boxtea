@@ -61,8 +61,6 @@ setup_env() {
     echo ""
     echo "Creating your environment file for BoxTea..."
     
-    # Write secret key first then informations next
-    echo "DJANGO_SECRET_KEY=$(openssl rand -base64 48)" >> "$INSTALL_DIR/.env"
     cat <<EOF > "$INSTALL_DIR/.env"
 # SERVER SETTINGS
 HOST=$HOST
@@ -104,6 +102,14 @@ main() {
     echo "3/8 Configuration of the environment..."
     if [ ! -f "$INSTALL_DIR/.env" ]; then
         setup_env
+    fi
+
+    if ! grep -q "SESSION_TOKEN" "$INSTALL_DIR/.env"; then
+        echo "SESSION_TOKEN=$(openssl rand -hex 32)" >> "$INSTALL_DIR/.env"
+    fi
+
+    if ! grep -q "DJANGO_SECRET_KEY" "$INSTALL_DIR/.env"; then
+        echo "DJANGO_SECRET_KEY=$(openssl rand -base64 48)" >> "$INSTALL_DIR/.env"
     fi
 
     export $(grep -v '^#' $INSTALL_DIR/.env | xargs)
