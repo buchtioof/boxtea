@@ -125,6 +125,9 @@ main() {
     # Prepare DB
     echo ""
     echo "5/8 Checking database..."
+    if ! grep -q "SESSION_TOKEN" "$INSTALL_DIR/.env"; then
+        echo "SESSION_TOKEN=$(openssl rand -hex 32)" >> "$INSTALL_DIR/.env"
+    fi
     python manage.py makemigrations > /dev/null
     python manage.py migrate --noinput > /dev/null
 
@@ -150,10 +153,6 @@ main() {
     echo "$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/sbin/useradd, /usr/sbin/chpasswd, /usr/bin/smbpasswd, /usr/sbin/setquota" | sudo tee /etc/sudoers.d/boxtea > /dev/null
     
     echo "Starting the server..."
-
-    if ! grep -q "SESSION_TOKEN" "$INSTALL_DIR/.env"; then
-        echo "SESSION_TOKEN=$(openssl rand -hex 32)" >> "$INSTALL_DIR/.env"
-    fi
 
     sed -i '/BOXTEA_VERSION/d' "$INSTALL_DIR/.env"
     sed -i '/MOTOR_USED/d' "$INSTALL_DIR/.env"
