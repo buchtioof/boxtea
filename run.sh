@@ -203,6 +203,5 @@ echo "                     '----'       '----' '-'                        --'   
 echo ""
 echo "Hello World! - Running BoxTea v$BT_VERSION"
 echo ""
-read -r -p "Press [Enter] to start the installer or [Ctrl+C] to cancel..."
 main
 ##############################
