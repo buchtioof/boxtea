@@ -60,7 +60,9 @@ setup_env() {
 
     echo ""
     echo "Creating your environment file for BoxTea..."
-
+    
+    # Write secret key first then informations next
+    echo "DJANGO_SECRET_KEY=$(openssl rand -base64 48)" >> "$INSTALL_DIR/.env"
     cat <<EOF > "$INSTALL_DIR/.env"
 # SERVER SETTINGS
 HOST=$HOST
