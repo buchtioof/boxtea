@@ -199,6 +199,13 @@ echo "                     '----'       '----' '-'                        --'   
 echo ""
 echo "Hello World! - Running BoxTea v$BT_VERSION"
 echo ""
-main
+read -n1 -s -r -p $'Welcome to grabber installation setup, click on Return Key to start the installer.\n' key
+
+if [ "$key" = '' ]; then
+    main
+else
+    exit 0
+fi
+read -p "" < /dev/tty
 
 ##############################
