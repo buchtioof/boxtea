@@ -61,7 +61,7 @@ setup_env() {
     echo ""
     echo "Creating your environment file for BoxTea..."
 
-    cat <<EOF > "$PROJECT_DIR/.env"
+    cat <<EOF > "$INSTALL_DIR/.env"
 # SERVER SETTINGS
 HOST=$HOST
 PORT=$PORT
@@ -88,7 +88,7 @@ main() {
     echo ""
     echo "2/8 Fetch the source code of BoxTea..."
     if [ ! -d "$INSTALL_DIR/.git" ]; then
-        sudo git clone -q $GIT_REPO_URL $INSTALL_DIR
+        sudo git clone -q $REPO_URL $INSTALL_DIR
     else
         echo "> BoxTea alredy exists in installation folder, updating your current installation..."
         cd $INSTALL_DIR
@@ -100,7 +100,7 @@ main() {
 
     echo ""
     echo "3/8 Configuration of the environment..."
-    if [ ! -f "$PROJECT_DIR/.env" ]; then
+    if [ ! -f "$INSTALL_DIR/.env" ]; then
         setup_env
     fi
 
@@ -148,11 +148,15 @@ main() {
     echo "$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/sbin/useradd, /usr/sbin/chpasswd, /usr/bin/smbpasswd, /usr/sbin/setquota" | sudo tee /etc/sudoers.d/boxtea > /dev/null
     
     echo "Starting the server..."
-    export DJANGO_ALLOWED_HOST=$ADMIN_ADDRESS
 
-    # Change by the version 
-    export BOXTEA_VERSION=$BT_VERSION
-    export MOTOR_USED=$MOTOR_VERSION
+    if ! grep -q "SESSION_TOKEN" "$INSTALL_DIR/.env"; then
+        echo "SESSION_TOKEN=$(openssl rand -hex 32)" >> "$INSTALL_DIR/.env"
+    fi
+
+    sed -i '/BOXTEA_VERSION/d' "$INSTALL_DIR/.env"
+    sed -i '/MOTOR_USED/d' "$INSTALL_DIR/.env"
+    echo "BOXTEA_VERSION=$BT_VERSION" >> "$INSTALL_DIR/.env"
+    echo "MOTOR_USED=$MOTOR_VERSION" >> "$INSTALL_DIR/.env"
 
    echo "8/8 Creating the service BoxTea..."
     cat <<EOF | sudo tee /etc/systemd/system/boxtea.service > /dev/null
@@ -199,13 +203,6 @@ echo "                     '----'       '----' '-'                        --'   
 echo ""
 echo "Hello World! - Running BoxTea v$BT_VERSION"
 echo ""
-read -n1 -s -r -p $'Welcome to grabber installation setup, click on Return Key to start the installer.\n' key
-
-if [ "$key" = '' ]; then
-    main
-else
-    exit 0
-fi
-read -p "" < /dev/tty
-
+read -r -p "Press [Enter] to start the installer or [Ctrl+C] to cancel..."
+main
 ##############################
