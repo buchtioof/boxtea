@@ -100,7 +100,7 @@ main() {
 
     echo ""
     echo "3/8 Configuration of the environment..."
-    if [ ! -f "$INSTALL_DIR/.env" ]; then
+    if [ ! -f "$PROJECT_DIR/.env" ]; then
         setup_env
     fi
 
