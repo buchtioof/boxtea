@@ -90,7 +90,7 @@ main() {
     echo ""
     echo "2/8 Fetch the source code of BoxTea..."
     if [ ! -d "$INSTALL_DIR/.git" ]; then
-        sudo git clone -q $REPO_URL $INSTALL_DIR
+        sudo git clone -b feature/installer -q $REPO_URL $INSTALL_DIR
     else
         echo "> BoxTea alredy exists in installation folder, updating your current installation..."
         cd $INSTALL_DIR
