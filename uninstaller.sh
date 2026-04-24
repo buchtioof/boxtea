@@ -7,7 +7,7 @@ SUCCESS='\033[0;32m'    # GREEN
 WARNING='\033[0;33m'    # YELLOW
 ECM='\033[0m'           # END COLOR MESSAGE
 
-read -r -p "You are about to uninstall completly Boxtea daemon, your configurations and data would be deleted. Continue? [y/N] " response
+read -r -p "You are about to uninstall completly Boxtea daemon, your configurations and data would be deleted. Continue? [y/N] " response < /dev/tty
 
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     echo -e "\n${WARNING}> 1/3 Stoping Boxtea daemon and processus...${ECM}"
