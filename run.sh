@@ -25,26 +25,26 @@ setup_env() {
     echo -e "${WARNING}> No .env file found, let's configure your environment now.${ECM}"
     echo "---------- INTERNET CONFIGURATION ----------"
     echo "On which IP address you want to route BoxTea? (Leave blank to use the host IP)"
-    read HOST
+    read HOST < /dev/tty
     HOST=${HOST:-0.0.0.0}
 
     echo "Which port you want to use for BoxTea? (Leave blank to use 8000)"
-    read PORT
+    read PORT < /dev/tty
     PORT=${PORT:-8000}
 
     echo "---------- ADMIN CONFIGURATION ----------"
     echo "Now, create your superuser for the admin panel."
     echo "What username do you want to use? (Leave blank to use admin)"
-    read SUNAME
+    read SUNAME < /dev/tty
     SUNAME=${SUNAME:-admin}
 
     echo "Type the email address linked to this user."
-    read MAIL
+    read MAIL < /dev/tty
     MAIL=${MAIL:-admin@boxtea.local}
 
     echo "Type the superuser password"
     while true; do
-        read -s PASS
+        read -s PASS < /dev/tty
         echo ""
             
         if [ -z "$PASS" ]; then
@@ -100,7 +100,7 @@ main() {
 
     echo ""
     echo "3/8 Configuration of the environment..."
-    if [ ! -f "$PROJECT_DIR/.env" ]; then
+    if [ ! -f "$INSTALL_DIR/.env" ]; then
         setup_env
     fi
 
