@@ -8,36 +8,25 @@ Boxtea is a simple interface for file administration in a Debian server. Change 
 
 ## Usage
 
-### Docker deployment
-
-Firstly, git clone this repo:\
-`git clone https://github.com/buchtioof/boxtea.git`
-
-In order to use properly your admin panel, create an .env file with these variables:\
-```text
-# Fill the blank spaces with your host IP, a username, an email and a password for admin user in order to use Grabber Admin.
-# DO NOT USE ""
-
-# SERVER SETTINGS
-HOST=
-PORT=8000
-
-# ADMIN SETTINGS
-DJANGO_SUPERUSER_USERNAME=
-DJANGO_SUPERUSER_EMAIL=
-DJANGO_SUPERUSER_PASSWORD=
-```
-
-Then, build the container with docker-compose:\
-`docker-compose up -d --build`
-
-Finally, access to your Grabber panel via the IP you've given in your .env file!
+Run the installer via this curl request:
+`curl -sSL https://raw.githubusercontent.com/buchtioof/boxtea/main/run.sh | bash`
 
 ## Changelogs
 
+### pre-releases
+
+- v0.1: migrate from Grabber project
+- v0.2: updating admin panel for BoxTea usage
+- v0.3: Rework dashboard
+- v0.4 and 0.5: bug fixes and functional state for dashboard
+- v0.6: rework of the BoxTea usage, delete Docker to be local, work on the runner
+- v0.7: refining runner to become an installer
+- v0.8 (current): installer done
+- v0.9 (soon): integrate Jarvis properly 
+
 ### releases
 
-- v0.1 (actual) : Non functional state, modification from Grabber to this project
+- v1: BoxTea standalone state with his installer, services via daemon and Jarvis integration.
 
 ## Contributing
 
